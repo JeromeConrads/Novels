@@ -9,14 +9,17 @@ markers=[',', '+', '>', '.', 'o', '*']
 
 
 def average(arr, n):
+     if(n == 0):
+         return arr
      end =  n * int(len(arr)/n)
+     print("end",end,n)
      return np.mean(arr[:end].reshape(-1, n), 1)
 
 
 
 def smooth(x,window_len=201,window='hanning'):
 
-         window_len = np.floor(len(x)/3.0)
+         window_len = int(np.floor(len(x)/3.0))
          # #print window_len, "window_lean"
          # if(window_len% 2  == 0):
          #     window_len-=1
@@ -25,10 +28,10 @@ def smooth(x,window_len=201,window='hanning'):
          #     print "correcting"
          #     window_len+=1
          if x.ndim != 1:
-             raise ValueError, "smooth only accepts 1 dimension arrays."
+             raise(ValueError, "smooth only accepts 1 dimension arrays.")
 
          if x.size < window_len:
-             raise ValueError, "Input vector needs to be bigger than window size."
+             raise(ValueError, "Input vector needs to be bigger than window size.")
 
 
          if window_len<3:
@@ -36,9 +39,9 @@ def smooth(x,window_len=201,window='hanning'):
 
 
          if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-             raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+             raise(ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
-
+         print("smooth",x)
          s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
          #print(len(s))
          if window == 'flat': #moving average
@@ -49,8 +52,9 @@ def smooth(x,window_len=201,window='hanning'):
          return y
 
 
-def get_average(f, fig = False, length = 3.0):
-    book = np.loadtxt(f)
+def get_average(f, fig = False, length = 3):
+    #book = np.loadtxt(f),ndmin in case file only has 1 line,Jerome C
+    book = np.loadtxt(f,ndmin=2)
     with open(f, 'r') as file:
         first_line = file.readline()
     first_line = first_line[2:].strip()
@@ -58,16 +62,18 @@ def get_average(f, fig = False, length = 3.0):
     for i in range(len(headers)):
         headers[i] = headers[i].upper()
 
-    #print headers
+    #print(headers)
     bookT = book.T
-    #print bookT.shape
+    print(bookT.shape)
     all_processed = []
     for i, emotion in enumerate(bookT):
-        #print emotion
+        #print(len(emotion))
         mv = emotion
-
-
-        mv = average(mv, np.floor(len(mv)/1000.0))
+        
+        #print(mv)
+        mv = average(mv, int(np.floor(len(mv)/1000.0)))
+        #mv = average(mv, len(mv+1))
+        #print(mv,"...")
         #print len(mv)
         #
         # mv =  moving_average(mv,100)
@@ -80,13 +86,15 @@ def get_average(f, fig = False, length = 3.0):
         # mv = average(mv, 10)
 
         if(len(mv) < length):
+            print("NONE")
             return None
         mv = smooth(mv)
         #mv = savitzky_golay(mv, 711, 3)
         #stride = max( int(len(mv) / 500), 1)
         #print "proced", len(mv)
         #mv2 = average(mv, np.floor(len(mv)/98.0))
-        mv = average(mv, np.floor(len(mv)/length))[-length:]
+        print("length",length)
+        mv = average(mv, int(np.floor(len(mv)/length)))[-length:]
         #print len(mv), len(mv2)
         #print len(mv)
         assert(len(mv) == length)
@@ -103,7 +111,7 @@ def get_average(f, fig = False, length = 3.0):
     if(fig):
         name = f.split("/")[-1][:-4] + "50.eps"
         name = join("./data/", name)
-        print name
+        print(name)
         pl.savefig(name, bbox_inches='tight')
         pl.cla()
         pl.clf()
@@ -114,13 +122,14 @@ def get_average(f, fig = False, length = 3.0):
 
 
 if __name__ == '__main__':
-    #mypath = "./results"
-    mypath = "/home/ssamot/projects/github/gutenberg/processed/results/"
+
+
+        
+    mypath = "./results"
+    #mypath = "/home/ssamot/projects/github/gutenberg/processed/results/"
 
     onlyfiles = [ (join(mypath,f), f[:-4], f) for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith(".txt")]
-
-
-
+    print(onlyfiles)
     counts = {}
     input_output = []
 
@@ -130,13 +139,15 @@ if __name__ == '__main__':
 
         fictid = int( files[-1].split("_")[0])
 
-        title = list(get_metadata('title', fictid))[0]
-        author = list(get_metadata('author', fictid))
+        
+        #print(get_metadata('title', fictid))
+        #title = list(get_metadata('title', fictid))[0]
+        #author = list(get_metadata('author', fictid))
 
 
         #matchObj = re.search("London Charivari", title, flags=0)
 
-        if (matchObj is None  and subject !="romance"):
+        if (subject !="romance"):
             #print title, author
 
             if(subject in counts):
@@ -148,26 +159,31 @@ if __name__ == '__main__':
 
     classes = {}
     tpl = []
-    for i,(key,val) in enumerate(counts.iteritems()):
-        print key, val
+    for i,(key,val) in enumerate(counts.items()):
+        print(key, val)
         classes[key] = i
         tpl.append(["textsc{%s}"%key,val,i])
 
-    print classes
+    print(classes)
 
     from tabulate import tabulate
     #print tpl
-    print tabulate(tpl, headers = ["Class","nInstances", "Class Id"], tablefmt="latex")
+    print(tabulate(tpl, headers = ["Class","nInstances", "Class Id"], tablefmt="latex"))
 
     #print onlyfiles
     X = []
     y = []
-    print len(tbrfiles)
+    print(len(tbrfiles))
+    #find out length of files
+    #for i, file in enumerate(tbrfiles):
+     
+
     for i, file in enumerate(tbrfiles):
-        #print file
+        #print("file",file,i)
         subject = file[1].split("_")[1]
         if(i < 5):
             data = get_average(file[0], fig = True)
+
         else:
             data = get_average(file[0], fig = False)
         if(data is not None):
@@ -184,10 +200,10 @@ if __name__ == '__main__':
     #print X.
     X = np.array(X).T
     y = np.array(y)
-    print X.shape, y.shape
+    print(X.shape, y.shape)
 
     np.savetxt("./data/X50-1.csv", X)
     np.savetxt("./data/y50-1.csv", y)
-
+    print("X50-1.csv and y50-1.csv in /data created")
     # pl.legend(headers)
     # pl.show()

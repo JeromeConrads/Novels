@@ -3,7 +3,7 @@ import nltk
 from os import listdir
 from converter16toCurrent import id2ss
 import numpy as np
-from os.path import isfile, join
+from os.path import isfile, join,exists
 
 
 
@@ -25,7 +25,7 @@ class EmotionDetector():
         emotions_type =  self.get_all_emotion_types_from_disk()
         emotions = {}
         for emotion in emotions_type:
-            print emotion
+            #print(emotion)
             emotions[emotion[1]] = self.load_synsets_from_file(emotion[0])
 
         return emotions
@@ -55,7 +55,7 @@ class EmotionDetector():
         for ss in sslist:
                     #print ss
                     #print ssid, len(synset2domains)
-                    for name, emotion in emotions.iteritems():
+                    for name, emotion in emotions.items():
                         if ss in emotion: # not all synsets are in WordNet Domain.
                             #print "Detected", ss, name
                             return name
@@ -102,10 +102,18 @@ class EmotionDetector():
 
 
 
-    def detect_emotion_in_file(self, file, resultfile):
+    def detect_emotion_in_file(self, file, resultfile,REPLACE_FILE= False):
         allvs = []
+        if not REPLACE_FILE:
+            if exists(resultfile):
+                print(resultfile, "already exists")
+                return
+                
         with open(file, "r") as ins:
-            data = ins.read().decode('utf8')
+            data = ins.read()
+        # python3 doesnt need str to be decoded, Jerome Conrads
+        #   data = ins.read().decode('utf8')
+       
         sentences = data.split(".")
         #print len(sentences)
         for s in sentences:
@@ -114,7 +122,7 @@ class EmotionDetector():
 
         allvs = np.array(allvs)
         #print allvs.shape
-        print resultfile
+        print(resultfile)
         np.savetxt(resultfile, allvs, header= ", ".join(self.sorted_keys))
 
 
@@ -127,7 +135,7 @@ if __name__ == '__main__':
 
     #print ed.detect_emotion_in_raw(raw)
     #print ed.detect_emotion_in_raw_np(raw)
-    print ed.detect_emotion_in_file("/home/ssamot/projects/github/gutenberg/processed/texts//0000019086_science fiction.txt","./results/0000019086_science fiction.txt")
+    print(ed.detect_emotion_in_file("/home/ssamot/projects/github/gutenberg/processed/texts//0000019086_science fiction.txt","./results/0000019086_science fiction.txt"))
 
 
 

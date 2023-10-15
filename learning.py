@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.cross_validation import cross_val_score, StratifiedShuffleSplit
+from sklearn.model_selection import cross_val_score, StratifiedShuffleSplit
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -27,14 +27,14 @@ def main():
 
     #X = X.T
 
-    print X.shape, y.shape
+    print(X.shape, y.shape)
     dc = DummyClassifier(strategy = "most_frequent")
     dc.fit(X,y)
 
 
-    print "Most Frequent", dc.score(X,y)
+    print("Most Frequent", dc.score(X,y))
     dc = DummyClassifier() ; dc.fit(X,y)
-    print "Stratified", dc.score(X,y)
+    print("Stratified", dc.score(X,y))
     #clf = LogisticRegression(class_weight="auto")
     #clf = RidgeClassifierCV(class_weight="auto", normalize=False)
     # #model =
@@ -68,13 +68,13 @@ def main():
     scores = []
     cms = []
     for i, (train_index, test_index) in enumerate(ss):
-        print "Shuffle %d"%(i,),
+        print("Shuffle %d"%(i,),)
         #print("%s %s" % (train_index, test_index))
         clf.fit(X[train_index], y[train_index])
         y_hat = clf.predict(X[test_index])
         #score = clf.score(X[test_index], y[test_index])
         score = accuracy_score(y[test_index], y_hat)
-        print score
+        print(score)
         cm = confusion_matrix(y[test_index], y_hat)
         #print m.type()
         scores.append(score)
@@ -87,7 +87,7 @@ def main():
         cms.append(cm)
 
     scores = np.array(scores)
-    print "ERF", scores.mean()
+    print("ERF", scores.mean())
     exit()
     #print cms
     cms = np.array(cms)
@@ -117,7 +117,7 @@ def main():
     importances = clf.feature_importances_
     ft = np.array([tree.feature_importances_ for tree in clf.estimators_])
     std = np.std(ft, axis=0)
-    print std.shape
+    print(std.shape)
 
 
     indices = np.argsort(importances)[::-1]
@@ -133,7 +133,7 @@ def main():
     # Plot the feature importances of the forest
     plt.figure()
     #plt.title("Feature importances")
-    print importances[indices].shape
+    print(importances[indices].shape)
     important = 30
     plt.barh(range(important), width = importances[indices][:important][::-1],
            color="c", xerr=cf[indices][:important][::-1], height = 0.5,  align="center", ecolor='r')
@@ -142,9 +142,9 @@ def main():
 
     yticks = []
     per_feature = 50
-    print std[indices][:important]
-    print importances[indices][:important]
-    print cf
+    print(std[indices][:important])
+    print(importances[indices][:important])
+    print(cf)
     for i in indices:
         yticks.append(feature_names[i/per_feature] + " " + str(i%per_feature))
     #yticks[::-1]

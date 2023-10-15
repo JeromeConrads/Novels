@@ -34,7 +34,7 @@ def convert(emotion_file):
                     synsets[id] = synset_30
                     f_conv.write(id + "\n")
             else:
-                print "broken", synset_16
+                print( "broken", synset_16)
 
     f_conv.close()
 

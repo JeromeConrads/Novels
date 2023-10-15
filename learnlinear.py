@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.cross_validation import cross_val_score, StratifiedShuffleSplit
+from sklearn.model_selection import cross_val_score, StratifiedShuffleSplit
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -12,6 +12,7 @@ import scipy.stats
 from sklearn.multiclass import OneVsRestClassifier as ORC
 
 
+# earlier file version, use learning.py instead,Jerome C
 def main():
     X = np.loadtxt("./data/X50.csv").T
     y = np.loadtxt("./data/y50.csv").T
@@ -22,21 +23,22 @@ def main():
     #     X = X[y != rm]
     #     y = y[y != rm]
 
-    newX = []
-    for x in X:
+    # no idea why this is here,Jerome C
+    #newX = []
+    #for x in X:
 
 
 
     #X = X.T
 
-    print X.shape, y.shape
+    print(X.shape, y.shape)
     dc = DummyClassifier(strategy = "most_frequent")
     dc.fit(X,y)
 
 
-    print "Most Frequent", dc.score(X,y)
+    print("Most Frequent", dc.score(X,y))
     dc = DummyClassifier() ; dc.fit(X,y)
-    print "Stratified", dc.score(X,y)
+    print("Stratified", dc.score(X,y))
     #clf = LogisticRegression(class_weight="auto")
     #clf = RidgeClassifierCV(class_weight="auto", normalize=False)
     # #model =
@@ -70,13 +72,13 @@ def main():
     scores = []
     cms = []
     for i, (train_index, test_index) in enumerate(ss):
-        print "Shuffle %d"%(i,),
+        print("Shuffle %d"%(i,),)
         #print("%s %s" % (train_index, test_index))
         clf.fit(X[train_index], y[train_index])
         y_hat = clf.predict(X[test_index])
         #score = clf.score(X[test_index], y[test_index])
         score = accuracy_score(y[test_index], y_hat)
-        print score
+        print(score)
         cm = confusion_matrix(y[test_index], y_hat)
         #print m.type()
         scores.append(score)

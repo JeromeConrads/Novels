@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.cross_validation import cross_val_score, StratifiedShuffleSplit
+from sklearn.model_selection import cross_val_score, StratifiedShuffleSplit
 from sklearn.dummy import DummyClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix

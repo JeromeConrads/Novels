@@ -38,7 +38,7 @@ def main():
             n = X_l.shape[1]
             #print "n", n
             x_l = X_l.mean(1).flatten()[j:j+t_emotions]
-            print label
+            print(label)
             if(label != "romance".upper()):
                 #x_l = np.zeros(x_l.shape)
             #     print "FOUFOUFOU"
@@ -51,7 +51,7 @@ def main():
 
                 lines.append(line[0])
             else:
-                print "This is impossible"
+                print("This is impossible")
                 exit()
 
         break
@@ -61,7 +61,7 @@ def main():
         #ax.set_xlabel('Fiction portion')
         ax.set_ylabel(emo + ' intensity')
         j+=t_emotions
-        print k, emo
+        print(k, emo)
     art = []
     plt.figlegend(lines, labels1, 9, ncol=3)
    # p_art = plt.legend(loc=9,bbox_to_anchor=(0.5, 1.0),  ncol=2)
