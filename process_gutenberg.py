@@ -42,13 +42,13 @@ for (dirpath, dirnames, filenames) in walk(gutenberg_path):
                             fn = str(id).zfill(10) + "_" +  i_subject + ".txt"
                             print(fn)
                             
-                            #try:
-                            text = strip_headers(load_etext(id)).strip().encode("utf-8")
-                            wf = "./texts/" + fn
-                            with open(wf, "wb") as text_file:
-                                text_file.write(text)
-                            print(i, total, float(i)/total)
-                            #except:
-                            #    print("broken", id)
+                            try:
+                                text = strip_headers(load_etext(id)).strip().encode("utf-8")
+                                wf = "./texts/" + fn
+                                with open(wf, "wb") as text_file:
+                                    text_file.write(text)
+                                print(i, total, float(i)/total)
+                            except:
+                                print("broken", id)
             # for network in tree.findtext('dcterms subject'):
             #     print network
