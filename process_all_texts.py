@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # may need to lower Number if "[Errno 12] Cannot allocate memory"
     # can increase if no error
     print("--------")
-    p = Pool(6)
+    p = Pool(10)
     length= len(input_output)
     print(length)
     print(input_output[0])

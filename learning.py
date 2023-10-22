@@ -49,7 +49,8 @@ def main():
     # check the accuracy on the training set
     #score = model.score(X, y)
     #print score
-    clf = ExtraTreesClassifier(n_estimators=1500, n_jobs = 2, random_state=10, class_weight = "auto")
+    #clf = ExtraTreesClassifier(n_estimators=1500, n_jobs = 2, random_state=10, class_weight = "auto")
+    clf = ExtraTreesClassifier(n_estimators=3500, n_jobs = 2, random_state=10)
     #clf = ORC(clf)
     #clf = RandomForestClassifier(n_estimators=500, min_samples_split=100, n_jobs = 2, random_state = 10)
    # clf = DecisionTreeClassifier(max_depth= 20)
@@ -64,10 +65,11 @@ def main():
 
 
 
-    ss = StratifiedShuffleSplit(y, n_iter=10, random_state=0)
+    #ss = StratifiedShuffleSplit(y, n_iter=10, random_state=0)
+    ss = StratifiedShuffleSplit(n_splits=10, random_state=0)
     scores = []
     cms = []
-    for i, (train_index, test_index) in enumerate(ss):
+    for i, (train_index, test_index) in enumerate(ss.split(X,y)):
         print("Shuffle %d"%(i,),)
         #print("%s %s" % (train_index, test_index))
         clf.fit(X[train_index], y[train_index])
@@ -88,7 +90,7 @@ def main():
 
     scores = np.array(scores)
     print("ERF", scores.mean())
-    exit()
+    #exit()
     #print cms
     cms = np.array(cms)
     #print cms.shape
@@ -127,14 +129,15 @@ def main():
 
     print("Feature ranking:")
 
-    for f in range(100):
-        print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+    #for f in range(100):
+        #print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+        #print(f+1," feature ", indices[f]," (",importances[indices[f]],")")
 
     # Plot the feature importances of the forest
     plt.figure()
     #plt.title("Feature importances")
     print(importances[indices].shape)
-    important = 30
+    important = 18 # changed from 30
     plt.barh(range(important), width = importances[indices][:important][::-1],
            color="c", xerr=cf[indices][:important][::-1], height = 0.5,  align="center", ecolor='r')
 
@@ -146,7 +149,7 @@ def main():
     print(importances[indices][:important])
     print(cf)
     for i in indices:
-        yticks.append(feature_names[i/per_feature] + " " + str(i%per_feature))
+        yticks.append(feature_names[int(i/per_feature)] + " " + str(int(i%per_feature)))
     #yticks[::-1]
     #plt.tick_params(axis='x', labelsize=5)
 

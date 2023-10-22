@@ -40,10 +40,11 @@ for (dirpath, dirnames, filenames) in walk(gutenberg_path):
 
                             id =  int(basename(f)[2:-4])
                             fn = str(id).zfill(10) + "_" +  i_subject + ".txt"
-                            print(fn)
+                            print(id,fn)
                             
                             try:
-                                text = strip_headers(load_etext(id)).strip().encode("utf-8")
+                                # original did not refresh cache
+                                text = strip_headers(load_etext(id,refresh_cache=True)).strip().encode("utf-8")
                                 wf = "./texts/" + fn
                                 with open(wf, "wb") as text_file:
                                     text_file.write(text)
