@@ -16,8 +16,8 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def main():
-    X = np.loadtxt("./data/X1.csv").T
-    y = np.loadtxt("./data/y1.csv").T
+    X = np.loadtxt("./data/X50-1.csv").T
+    y = np.loadtxt("./data/y50-1.csv").T
 
 
 
@@ -30,16 +30,17 @@ def main():
 
     #X = X.T
 
-    print X.shape, y.shape
+    print(X.shape, y.shape)
     dc = DummyClassifier(strategy = "most_frequent")
     dc.fit(X,y)
 
 
-    print "Most Frequent", dc.score(X,y)
+    print("Most Frequent", dc.score(X,y))
     dc = DummyClassifier() ; dc.fit(X,y)
-    print "Stratified", dc.score(X,y)
-    lr = LogisticRegression(class_weight="auto", fit_intercept=False, penalty="l1")
-    clf = make_pipeline(StandardScaler(), lr)
+    print("Stratified", dc.score(X,y))
+    #lr = LogisticRegression(class_weight="auto", fit_intercept=False, penalty="l1")
+    lr = LogisticRegression(fit_intercept=False)
+    #clf = make_pipeline(StandardScaler(), lr)
     #clf = RidgeClassifierCV(class_weight="auto", normalize=False)
     # #model =
     #model = clf.fit(X, y)
@@ -57,7 +58,7 @@ def main():
     # check the accuracy on the training set
     #score = model.score(X, y)
     #print score
-    #clf = ExtraTreesClassifier(n_estimators=1500, n_jobs = 2, random_state=10, class_weight = "auto")
+    clf = ExtraTreesClassifier(n_estimators=1500, n_jobs = 2, random_state=10)
     #clf = ORC(clf)
     #clf = RandomForestClassifier(n_estimators=500, min_samples_split=100, n_jobs = 2, random_state = 10)
    # clf = DecisionTreeClassifier(max_depth= 20)
@@ -72,17 +73,18 @@ def main():
 
 
 
-    ss = StratifiedShuffleSplit(y, n_iter=10, random_state=0)
+    #ss = StratifiedShuffleSplit(y, n_iter=10, random_state=0)
+    ss = StratifiedShuffleSplit(n_splits=10, random_state=0)
     scores = []
     cms = []
-    for i, (train_index, test_index) in enumerate(ss):
-        print "Shuffle %d"%(i,),
+    for i, (train_index, test_index) in enumerate(ss.split(X,y)):
+        print("Shuffle",i)
         #print("%s %s" % (train_index, test_index))
         clf.fit(X[train_index], y[train_index])
         y_hat = clf.predict(X[test_index])
         #score = clf.score(X[test_index], y[test_index])
         score = accuracy_score(y[test_index], y_hat)
-        print score
+        print(score)
         cm = confusion_matrix(y[test_index], y_hat)
         #print m.type()
         scores.append(score)
@@ -95,10 +97,10 @@ def main():
         cms.append(cm)
 
     scores = np.array(scores)
-    print "ERF", scores.mean()
-    print clf.fit(X,y)
-    print lr.coef_
-    print lr.intercept_
+    print("ERF", scores.mean())
+    print(clf.fit(X,y))
+    print(lr.coef_)
+    print(lr.intercept_)
     feature_names = ["--ANGER;".lower(), "--DISGUST;".lower(), "--FEAR;".lower(), "--JOY;".lower(), "--SADNESS;".lower(), "--SURPRISE;".lower()]
 
     labels = ["--mystery;", "--humor;", "--fantasy;", "--horror;", "--science fiction;", "--western;"]
@@ -112,8 +114,8 @@ def main():
     t =  tabulate(l, headers = feature_names,  tablefmt="latex")
     t = t.replace("--", "\\textsc{")
     t = t.replace(";", "}")
-    print t
-    exit()
+    print(t)
+    #exit()
 
     #print cms
     cms = np.array(cms)
@@ -144,7 +146,7 @@ def main():
     importances = clf.feature_importances_
     ft = np.array([tree.feature_importances_ for tree in clf.estimators_])
     std = np.std(ft, axis=0)
-    print std.shape
+    print(std.shape)
 
 
     indices = np.argsort(importances)[::-1]
@@ -160,7 +162,7 @@ def main():
     # Plot the feature importances of the forest
     plt.figure()
     #plt.title("Feature importances")
-    print importances[indices].shape
+    print(importances[indices].shape)
     important = 30
     plt.barh(range(important), width = importances[indices][:important][::-1],
            color="c", xerr=cf[indices][:important][::-1], height = 0.5,  align="center", ecolor='r')
@@ -169,9 +171,9 @@ def main():
 
     yticks = []
     per_feature = 50
-    print std[indices][:important]
-    print importances[indices][:important]
-    print cf
+    print(std[indices][:important])
+    print(importances[indices][:important])
+    print(cf)
     for i in indices:
         yticks.append(feature_names[i/per_feature] + " " + str(i%per_feature))
     #yticks[::-1]

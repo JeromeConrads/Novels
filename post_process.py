@@ -12,7 +12,7 @@ def average(arr, n):
      if(n == 0):
          return arr
      end =  n * int(len(arr)/n)
-     print("end",end,n)
+     #print("end",end,n)
      return np.mean(arr[:end].reshape(-1, n), 1)
 
 
@@ -41,7 +41,7 @@ def smooth(x,window_len=201,window='hanning'):
          if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
              raise(ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
-         print("smooth",x)
+         #print("smooth",x)
          s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
          #print(len(s))
          if window == 'flat': #moving average
@@ -51,8 +51,8 @@ def smooth(x,window_len=201,window='hanning'):
          y=np.convolve(w/w.sum(),s,mode='valid')
          return y
 
-
-def get_average(f, fig = False, length = 3):
+# length x 6 = amount of features in the model
+def get_average(f, fig = False, length = 10):
     #book = np.loadtxt(f),ndmin in case file only has 1 line,Jerome C
     book = np.loadtxt(f,ndmin=2)
     with open(f, 'r') as file:
@@ -70,8 +70,7 @@ def get_average(f, fig = False, length = 3):
         #print(len(emotion))
         mv = emotion
         
-        #print(mv)
-        mv = average(mv, int(np.floor(len(mv)/1000.0)))
+        #mv = average(mv, int(np.floor(len(mv)/1000.0)))
         #mv = average(mv, len(mv+1))
         #print(mv,"...")
         #print len(mv)
@@ -93,7 +92,7 @@ def get_average(f, fig = False, length = 3):
         #stride = max( int(len(mv) / 500), 1)
         #print "proced", len(mv)
         #mv2 = average(mv, np.floor(len(mv)/98.0))
-        print("length",length)
+        #print("length",length)
         mv = average(mv, int(np.floor(len(mv)/length)))[-length:]
         #print len(mv), len(mv2)
         #print len(mv)
@@ -117,7 +116,8 @@ def get_average(f, fig = False, length = 3):
         pl.clf()
 
     mv = np.array(all_processed).flatten()
-    #print mv.shape
+    print(mv.shape)
+
     return mv
 
 
@@ -129,12 +129,12 @@ if __name__ == '__main__':
     #mypath = "/home/ssamot/projects/github/gutenberg/processed/results/"
 
     onlyfiles = [ (join(mypath,f), f[:-4], f) for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith(".txt")]
-    print(onlyfiles)
+    #print(onlyfiles)
     counts = {}
     input_output = []
 
     tbrfiles = []
-    for files in onlyfiles:
+    for files in sorted(onlyfiles):
         subject = files[1].split("_")[1]
 
         fictid = int( files[-1].split("_")[0])
@@ -146,8 +146,8 @@ if __name__ == '__main__':
 
 
         #matchObj = re.search("London Charivari", title, flags=0)
-
-        if (subject !="romance"):
+        #XXX romance nicht ausschließen
+        if (subject !="romance" ):
             #print title, author
 
             if(subject in counts):
@@ -155,7 +155,7 @@ if __name__ == '__main__':
             else:
                 counts[subject] = 1
             tbrfiles.append(files)
-
+            print(counts)
 
     classes = {}
     tpl = []
@@ -173,7 +173,6 @@ if __name__ == '__main__':
     #print onlyfiles
     X = []
     y = []
-    print(len(tbrfiles))
     #find out length of files
     #for i, file in enumerate(tbrfiles):
      

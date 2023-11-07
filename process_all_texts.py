@@ -1,6 +1,6 @@
 from os.path import isfile, join
 from os import listdir
-from wordaffect import EmotionDetector
+from wordaffect import EmotionDetectors
 from multiprocessing import Pool
 
 import nltk

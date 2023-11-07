@@ -33,3 +33,11 @@ may lead to problems later
 
 old data used 3403 lines, ERF 0.589
 mine 7731 lines, ERD 0.616
+
+more books of e genre= more accuracy
+try removing that problem maybe bagging? may allow adding romance back
+
+whats dummy?
+
+
+

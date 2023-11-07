@@ -57,7 +57,7 @@ class EmotionDetector():
                     #print ssid, len(synset2domains)
                     for name, emotion in emotions.items():
                         if ss in emotion: # not all synsets are in WordNet Domain.
-                            #print "Detected", ss, name
+                            print("Detected", ss, name)
                             return name
 
         return None
@@ -76,13 +76,14 @@ class EmotionDetector():
     def detect_emotion_in_raw(self, raw):
         count = self.__zero_count_emotions(self.emotions)
         sentences = self.pos_from_raw( raw )
+        print(sentences)
         for sentence in sentences:
             #print "original sentence: " + str(sentences) + "POS chunks: \n"
             for pos in sentence:
                 #print "-"
                 #print pos
                 sslist = wn.synsets( pos[0] )
-                #print sslist
+                print(sslist)
                 found_emotion = self.__detect_emotion_in_sslist(sslist,self.emotions)
                 #print detect_emotion(sslist,emotions)
                 if(found_emotion is not None ):
@@ -133,8 +134,8 @@ if __name__ == '__main__':
 
     raw = "Full of unfriendliness and not hate."
 
-    #print ed.detect_emotion_in_raw(raw)
-    #print ed.detect_emotion_in_raw_np(raw)
+    print(ed.detect_emotion_in_raw(raw))
+    print(ed.detect_emotion_in_raw_np(raw))
     print(ed.detect_emotion_in_file("/home/ssamot/projects/github/gutenberg/processed/texts//0000019086_science fiction.txt","./results/0000019086_science fiction.txt"))
 
 
