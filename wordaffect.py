@@ -132,8 +132,8 @@ if __name__ == '__main__':
     ed = EmotionDetector()
 
 
-    raw = "Full of unfriendliness and not hate."
-
+    #raw = "Full of unfriendliness and not hate."
+    raw = "you are the most important person to me, and i want to be with you forever"
     print(ed.detect_emotion_in_raw(raw))
     print(ed.detect_emotion_in_raw_np(raw))
     print(ed.detect_emotion_in_file("/home/ssamot/projects/github/gutenberg/processed/texts//0000019086_science fiction.txt","./results/0000019086_science fiction.txt"))

@@ -52,7 +52,7 @@ def smooth(x,window_len=201,window='hanning'):
          return y
 
 # length x 6 = amount of features in the model
-def get_average(f, fig = False, length = 10):
+def get_average(f, fig = False, length = 3):
     #book = np.loadtxt(f),ndmin in case file only has 1 line,Jerome C
     book = np.loadtxt(f,ndmin=2)
     with open(f, 'r') as file:
@@ -72,8 +72,8 @@ def get_average(f, fig = False, length = 10):
         
         #mv = average(mv, int(np.floor(len(mv)/1000.0)))
         #mv = average(mv, len(mv+1))
-        #print(mv,"...")
-        #print len(mv)
+        print(mv,"...")
+        print(len(mv))
         #
         # mv =  moving_average(mv,100)
         # # while True:
@@ -87,13 +87,17 @@ def get_average(f, fig = False, length = 10):
         if(len(mv) < length):
             print("NONE")
             return None
-        mv = smooth(mv)
+        print(mv)
+        #mv = smooth(mv)
+        #print("smothed:", mv)
         #mv = savitzky_golay(mv, 711, 3)
         #stride = max( int(len(mv) / 500), 1)
         #print "proced", len(mv)
         #mv2 = average(mv, np.floor(len(mv)/98.0))
         #print("length",length)
+        print(mv.shape)
         mv = average(mv, int(np.floor(len(mv)/length)))[-length:]
+        print(mv.shape)
         #print len(mv), len(mv2)
         #print len(mv)
         assert(len(mv) == length)
@@ -110,13 +114,13 @@ def get_average(f, fig = False, length = 10):
     if(fig):
         name = f.split("/")[-1][:-4] + "50.eps"
         name = join("./data/", name)
-        print(name)
+        #print(name)
         pl.savefig(name, bbox_inches='tight')
         pl.cla()
         pl.clf()
 
     mv = np.array(all_processed).flatten()
-    print(mv.shape)
+    #print(mv.shape)
 
     return mv
 
@@ -155,7 +159,7 @@ if __name__ == '__main__':
             else:
                 counts[subject] = 1
             tbrfiles.append(files)
-            print(counts)
+            #print(counts)
 
     classes = {}
     tpl = []
